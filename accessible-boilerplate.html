@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en"> <!-- lang attribute helps screen readers use correct pronunciation -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures proper scaling on mobile devices -->
+    <meta name="description" content="Accessible webpage boilerplate"> <!-- Important for screen readers -->
+    <title>Accessible Webpage Boilerplate</title> <!-- Descriptive title for screen readers and browser tabs -->
+    
+    <!-- NOTE: In a production environment, it's better to link external CSS files.
+         Embedded styles are used here only for demonstration purposes. -->
+    <style>
+        /* Accessible CSS Styles */
+        
+        /* Global styles with sufficient color contrast (WCAG 2.1 AA requires 4.5:1 for normal text) */
+        :root {
+            --text-color: #333333;
+            --background-color: #ffffff;
+            --primary-color: #0056b3;
+            --focus-color: #ff8c00;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+            /* System font stack improves readability across devices */
+            color: var(--text-color);
+            background-color: var(--background-color);
+            line-height: 1.5; /* Improved line height for readability */
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        /* Skip link for keyboard users to bypass navigation */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            /* Skip link appears when it receives focus */
+            transition: top 0.3s ease;
+        }
+        
+        .skip-link:focus {
+            top: 0;
+        }
+        
+        /* Focus states must be visible for keyboard navigation (WCAG 2.1 2.4.7) */
+        :focus {
+            outline: 3px solid var(--focus-color);
+            outline-offset: 2px;
+        }
+        
+        /* Prevent animations for users who prefer reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+        
+        /* Header and navigation */
+        header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        nav ul {
+            display: flex;
+            flex-wrap: wrap;
+            list-style: none;
+            padding: 0;
+            gap: 1rem;
+        }
+        
+        nav a {
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 0.5rem;
+            display: inline-block;
+            border-radius: 4px;
+        }
+        
+        nav a:hover, 
+        nav a:focus {
+            text-decoration: underline;
+            background-color: rgba(0, 86, 179, 0.1);
+        }
+        
+        nav a[aria-current="page"] {
+            font-weight: bold;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        /* Footer styling */
+        footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #ddd;
+        }
+        
+        /* Documentation section styling */
+        .documentation {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-left: 4px solid var(--primary-color);
+            margin: 2rem 0;
+        }
+        
+        .documentation code {
+            background-color: #eee;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <!-- Documentation notice -->
+    <div class="documentation">
+        <h2>About This Boilerplate</h2>
+        <p>This is a minimal accessible HTML boilerplate with embedded CSS for demonstration purposes only. In a production environment, you should:</p>
+        <ul>
+            <li>Separate HTML, CSS, and JavaScript into different files</li>
+            <li>Minify resources to improve loading performance</li>
+            <li>Consider using semantic HTML5 elements throughout your document</li>
+            <li>Test with actual assistive technologies like screen readers</li>
+        </ul>
+    </div>
+
+    <!-- Skip link allows keyboard users to bypass navigation -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header>
+        <!-- Use semantic elements like header to define page structure -->
+        <nav aria-label="Main Navigation">
+            <ul>
+                <!-- List structure provides semantic meaning to navigation items -->
+                <li><a href="#" aria-current="page">Home</a></li> <!-- aria-current indicates current page -->
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="main-content"> <!-- ID connects to the skip link target -->
+        <h1>Accessible Webpage Boilerplate</h1> <!-- Always include a single h1 as the main heading -->
+    </main>
+
+    <footer>
+        <!-- Semantically marked as footer -->
+        <p>&copy; 2025 Accessible Website Boilerplate</p>
+    </footer>
+
+    <!-- NOTE: In a production environment, it's better to link external JavaScript files.
+         Embedded script is used here only for demonstration purposes. -->
+    <script>
+        // Make the skip link work by setting focus
+        document.querySelector('.skip-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            target.setAttribute('tabindex', '-1');
+            target.focus();
+        });
+    </script>
+</body>
+</html>
