@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en"> <!-- lang attribute helps screen readers use correct pronunciation -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures proper scaling on mobile devices -->
+    <title>Accessible Webpage Example</title> <!-- Descriptive title for screen readers and browser tabs -->
+    
+    <!-- NOTE: In a production environment, it's better to link external CSS files.
+         Embedded styles are used here only for demonstration purposes. -->
+    <style>
+        /* Accessible CSS Styles */
+        
+        /* Global styles with sufficient color contrast (WCAG 2.1 AA requires 4.5:1 for normal text) */
+        :root {
+            --text-color: #333333;
+            --background-color: #ffffff;
+            --primary-color: #0056b3;
+            --focus-color: #ff8c00;
+            --error-color: #d32f2f;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+            /* System font stack improves readability across devices */
+            color: var(--text-color);
+            background-color: var(--background-color);
+            line-height: 1.5; /* Improved line height for readability */
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        /* Skip link for keyboard users to bypass navigation */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            /* Skip link appears when it receives focus */
+            transition: top 0.3s ease;
+        }
+        
+        .skip-link:focus {
+            top: 0;
+        }
+        
+        /* Focus states must be visible for keyboard navigation (WCAG 2.1 2.4.7) */
+        :focus {
+            outline: 3px solid var(--focus-color);
+            outline-offset: 2px;
+        }
+        
+        /* Prevent animations for users who prefer reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+        
+        /* Header and navigation */
+        header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        nav ul {
+            display: flex;
+            flex-wrap: wrap;
+            list-style: none;
+            padding: 0;
+            gap: 1rem;
+        }
+        
+        nav a {
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 0.5rem;
+            display: inline-block;
+            border-radius: 4px;
+        }
+        
+        nav a:hover, 
+        nav a:focus {
+            text-decoration: underline;
+            background-color: rgba(0, 86, 179, 0.1);
+        }
+        
+        nav a[aria-current="page"] {
+            font-weight: bold;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        /* Section and content styling */
+        section {
+            margin-bottom: 2rem;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 0;
+            color: #222;
+            line-height: 1.2;
+        }
+        
+        /* Image handling */
+        img {
+            max-width: 100%;
+            height: auto; /* Preserve aspect ratio */
+            border-radius: 4px;
+        }
+        
+        /* Form styling with accessible input fields */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        input, 
+        textarea, 
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        /* Increase tap target size for better mobile accessibility (WCAG 2.1 2.5.5) */
+        button, 
+        input[type="submit"] {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            min-height: 44px; /* Minimum 44x44px tap target */
+        }
+        
+        button:hover, 
+        input[type="submit"]:hover {
+            background-color: #004494;
+        }
+        
+        /* Accessible error states */
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        
+        input.error, 
+        textarea.error {
+            border-color: var(--error-color);
+        }
+        
+        /* Radio buttons and checkboxes */
+        .radio-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .radio-group input[type="radio"],
+        .radio-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 0.5rem;
+        }
+        
+        .radio-group label {
+            margin-bottom: 0;
+            display: inline;
+        }
+        
+        fieldset {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+        }
+        
+        legend {
+            padding: 0 0.5rem;
+            font-weight: bold;
+        }
+        
+        /* Help text for form elements */
+        .help-text {
+            font-size: 0.875rem;
+            color: #555;
+            margin-top: 0.25rem;
+        }
+        
+        /* Tab interface */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 1rem;
+        }
+        
+        .tabs button {
+            background: none;
+            color: var(--text-color);
+            border: none;
+            padding: 0.75rem 1rem;
+            margin-right: 0.25rem;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tabs button[aria-selected="true"] {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        [role="tabpanel"] {
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        
+        /* Footer styling */
+        footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #ddd;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            list-style: none;
+            padding: 0;
+            gap: 1rem;
+        }
+        
+        /* Responsive design */
+        @media screen and (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+            }
+            
+            nav a {
+                display: block;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tabs button {
+                width: 100%;
+                text-align: left;
+            }
+        }
+        
+        /* Documentation section styling */
+        .documentation {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-left: 4px solid var(--primary-color);
+            margin: 2rem 0;
+        }
+        
+        .documentation code {
+            background-color: #eee;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <!-- Documentation notice -->
+    <div class="documentation">
+        <h2>About This Example</h2>
+        <p>This single HTML file contains embedded CSS for demonstration purposes only. In a production environment, you should:</p>
+        <ul>
+            <li>Separate HTML, CSS, and JavaScript into different files</li>
+            <li>Minify resources to improve loading performance</li>
+            <li>Consider using semantic HTML5 elements throughout your document</li>
+            <li>Test with actual assistive technologies like screen readers</li>
+        </ul>
+    </div>
+
+    <!-- Skip link allows keyboard users to bypass navigation -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header>
+        <!-- Use semantic elements like header to define page structure -->
+        <h1>Accessible Webpage Example</h1> <!-- Always include a single h1 as the main heading -->
+        
+        <!-- Navigation with ARIA landmarks helps screen reader users navigate -->
+        <nav aria-label="Main Navigation">
+            <ul>
+                <!-- List structure provides semantic meaning to navigation items -->
+                <li><a href="#" aria-current="page">Home</a></li> <!-- aria-current indicates current page -->
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="main-content"> <!-- ID connects to the skip link target -->
+        <section>
+            <h2>Welcome to Our Accessible Website</h2> <!-- Proper heading hierarchy is essential -->
+            <p>This example demonstrates accessible HTML structure with explanatory comments.</p>
+            
+            <!-- Images must have alt text for screen readers -->
+            <!-- In a real site, replace with actual image paths -->
+            <div style="width:400px;height:300px;background:#eee;display:flex;align-items:center;justify-content:center;">
+                [Image: A person using a computer with assistive technology]
+                <!-- This is just a placeholder. In a real site, use:
+                <img src="image.jpg" alt="A person using a computer with assistive technology" width="400" height="300"> -->
+            </div>
+            <!-- Including dimensions prevents layout shifts during loading -->
+            
+            <!-- For decorative images that should be ignored by screen readers -->
+            <div style="width:200px;height:100px;background:#f5f5f5;margin-top:1rem;">
+                <!-- This is just a placeholder. In a real site, use:
+                <img src="decorative-element.jpg" alt="" role="presentation"> -->
+            </div>
+        </section>
+
+        <section>
+            <h2>Form Example</h2>
+            <!-- Forms need proper labels, grouping, and error handling -->
+            <form>
+                <div class="form-group">
+                    <label for="name">Your Name</label> <!-- Labels must be associated with inputs -->
+                    <input type="text" id="name" name="name" required aria-required="true">
+                    <!-- required and aria-required provide redundancy for different assistive technologies -->
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required aria-required="true">
+                    <!-- Use semantic input types like 'email' for better mobile keyboards and validation -->
+                </div>
+                
+                <fieldset> <!-- Fieldset groups related form controls -->
+                    <legend>Preferred Contact Method</legend> <!-- Legend describes the group -->
+                    
+                    <div class="radio-group">
+                        <input type="radio" id="contact-email" name="contact-method" value="email">
+                        <label for="contact-email">Email</label>
+                    </div>
+                    
+                    <div class="radio-group">
+                        <input type="radio" id="contact-phone" name="contact-method" value="phone">
+                        <label for="contact-phone">Phone</label>
+                    </div>
+                </fieldset>
+                
+                <div class="form-group">
+                    <label for="message">Your Message</label>
+                    <textarea id="message" name="message" rows="5" aria-describedby="message-help"></textarea>
+                    <p id="message-help" class="help-text">Please provide details about your inquiry.</p>
+                    <!-- aria-describedby connects the input to its description -->
+                </div>
+                
+                <button type="submit">Submit</button> <!-- Use button rather than input for better styling control -->
+            </form>
+        </section>
+        
+        <section>
+            <h2>Interactive Example</h2>
+            
+            <!-- Tab interfaces need proper ARIA roles -->
+            <div class="tabs" role="tablist">
+                <button id="tab1" role="tab" aria-selected="true" aria-controls="panel1">Tab 1</button>
+                <button id="tab2" role="tab" aria-selected="false" aria-controls="panel2">Tab 2</button>
+                <button id="tab3" role="tab" aria-selected="false" aria-controls="panel3">Tab 3</button>
+            </div>
+            
+            <div id="panel1" role="tabpanel" aria-labelledby="tab1">
+                <p>This is the content for Tab 1. Tab interfaces must be keyboard accessible and properly labeled.</p>
+            </div>
+            
+            <div id="panel2" role="tabpanel" aria-labelledby="tab2" hidden>
+                <p>Content for Tab 2 would appear here.</p>
+            </div>
+            
+            <div id="panel3" role="tabpanel" aria-labelledby="tab3" hidden>
+                <p>Content for Tab 3 would appear here.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <!-- Semantically marked as footer -->
+        <p>&copy; 2025 Accessible Website Example</p>
+        
+        <!-- Links with descriptive text help all users understand their purpose -->
+        <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Accessibility Statement</a></li>
+        </ul>
+    </footer>
+
+    <!-- NOTE: In a production environment, it's better to link external JavaScript files.
+         Embedded script is used here only for demonstration purposes. -->
+    <script>
+        // Make tabs work with both mouse and keyboard
+        document.querySelectorAll('[role="tab"]').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Deselect all tabs
+                document.querySelectorAll('[role="tab"]').forEach(t => {
+                    t.setAttribute('aria-selected', 'false');
+                });
+                
+                // Hide all panels
+                document.querySelectorAll('[role="tabpanel"]').forEach(p => {
+                    p.hidden = true;
+                });
+                
+                // Select clicked tab
+                tab.setAttribute('aria-selected', 'true');
+                
+                // Show corresponding panel
+                const panelId = tab.getAttribute('aria-controls');
+                document.getElementById(panelId).hidden = false;
+            });
+            
+            // Handle keyboard events
+            tab.addEventListener('keydown', e => {
+                const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+                const index = tabs.indexOf(tab);
+                
+                // Left/Right arrow keys navigate between tabs
+                if (e.key === 'ArrowRight') {
+                    const nextTab = tabs[(index + 1) % tabs.length];
+                    nextTab.focus();
+                    nextTab.click();
+                    e.preventDefault();
+                }
+                
+                if (e.key === 'ArrowLeft') {
+                    const prevTab = tabs[(index - 1 + tabs.length) % tabs.length];
+                    prevTab.focus();
+                    prevTab.click();
+                    e.preventDefault();
+                }
+            });
+        });
+        
+        // Make the skip link work by setting focus
+        document.querySelector('.skip-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            target.setAttribute('tabindex', '-1');
+            target.focus();
+        });
+    </script>
+</body>
+</html>
